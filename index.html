@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Lost Mode Manager Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 600px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .apple-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .apple-logo svg {
+            width: 70px;
+            height: 70px;
+            filter: drop-shadow(0 5px 10px rgba(0,122,255,0.3));
+        }
+
+        h1 {
+            text-align: center;
+            color: #1d1d1f;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #86868b;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e9e9ed;
+            border-radius: 14px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 4px rgba(0,122,255,0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,122,255,0.3);
+        }
+
+        .btn:hover {
+            background: #0051b3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,122,255,0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: #34c759;
+            box-shadow: 0 5px 15px rgba(52,199,89,0.3);
+        }
+
+        .btn-success:hover {
+            background: #2b9e48;
+        }
+
+        .btn-danger {
+            background: #ff3b30;
+            box-shadow: 0 5px 15px rgba(255,59,48,0.3);
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-warning {
+            background: #ff9500;
+            box-shadow: 0 5px 15px rgba(255,149,0,0.3);
+        }
+
+        .btn-warning:hover {
+            background: #cc7a00;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            display: block;
+        }
+
+        .device-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e9e9ed;
+            border-radius: 14px;
+            padding: 10px;
+            display: none;
+            background: #f9f9fb;
+        }
+
+        .device-item {
+            padding: 15px;
+            border-bottom: 1px solid #e9e9ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .device-item:hover {
+            background: #f0f0f5;
+        }
+
+        .device-item.selected {
+            background: #e3f2ff;
+            border: 2px solid #007AFF;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+        }
+
+        .device-name {
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .device-model {
+            font-size: 13px;
+            color: #86868b;
+            margin-top: 3px;
+        }
+
+        .device-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-lost {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .status-normal {
+            background: #34c759;
+            color: white;
+        }
+
+        .status-unknown {
+            background: #86868b;
+            color: white;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9fb;
+            border-radius: 14px;
+        }
+
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007AFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e9e9ed;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #86868b;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #007AFF;
+            border-bottom-color: #007AFF;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .phone-number-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .phone-number-input input {
+            flex: 1;
+        }
+
+        .message-box {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .device-count {
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-buttons .btn {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="apple-logo">
+            <svg viewBox="0 0 24 24" fill="#007AFF">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2.01.76-3.27.82-1.31.07-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.49.87 3.27.87.79 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.61 4.03 2.64 4.04-.02.07-.41 1.44-1.36 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+        </div>
+        
+        <h1>Lost Mode Manager Pro</h1>
+        <p class="subtitle">Advanced Apple Device Management Tool</p>
+
+        <div class="tab-container">
+            <div class="tab active" onclick="switchTab('connect')">Connect</div>
+            <div class="tab" onclick="switchTab('remove')">Remove Lost Mode</div>
+            <div class="tab" onclick="switchTab('add')">Add Lost Mode</div>
+        </div>
+
+        <!-- Connect Tab -->
+        <div id="connect-tab" class="tab-content active">
+            <div class="input-group">
+                <label>Apple ID Email</label>
+                <input type="email" id="email" placeholder="example@icloud.com" value="test@icloud.com">
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" value="password123">
+            </div>
+
+            <button class="btn" id="connectBtn" onclick="connectToICloud()">
+                🔌 Connect to iCloud
+            </button>
+        </div>
+
+        <!-- Remove Lost Mode Tab -->
+        <div id="remove-tab" class="tab-content">
+            <div class="device-count" id="deviceCount">Devices: 0</div>
+            <div class="device-list" id="deviceList"></div>
+
+            <div class="checkbox-container" id="confirmDeleteContainer" style="display: none;">
+                <input type="checkbox" id="confirmDelete">
+                <label>I confirm to remove lost mode from SELECTED devices and remove them from Apple ID</label>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-danger" id="removeSelectedBtn" style="display: none;" onclick="removeSelectedDevices()" disabled>
+                    🗑️ Remove Selected from Lost Mode
+                </button>
+                <button class="btn btn-warning" id="removeAllBtn" style="display: none;" onclick="removeAllDevices()" disabled>
+                    ⚡ Remove ALL Devices
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Lost Mode Tab -->
+        <div id="add-tab" class="tab-content">
+            <div class="device-list" id="addDeviceList" style="max-height: 150px;"></div>
+
+            <div class="input-group">
+                <label>Select Device to Mark as Lost</label>
+                <select id="deviceSelect">
+                    <option value="">-- Select Device --</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Phone Number to Display</label>
+                <input type="tel" id="lostPhone" placeholder="+1 (555) 123-4567" value="+18001234567">
+            </div>
+
+            <div class="input-group">
+                <label>Message to Display</label>
+                <textarea id="lostMessage" class="message-box" placeholder="This iPhone has been lost. Please call me.">This device is lost. Please return it for reward.</textarea>
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="playSound" checked>
+                <label>Play sound when lost mode activates</label>
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="notifyWhenFound">
+                <label>Notify when device is located</label>
+            </div>
+
+            <button class="btn btn-success" id="addLostModeBtn" onclick="addLostMode()" disabled>
+                🔒 Activate Lost Mode
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+
+    <script src="api/lost-mode.js"></script>
+</body>
+</html>
